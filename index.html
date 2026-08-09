@@ -7,10 +7,10 @@
     <meta name="description" content="AI Interior Designer - Photorealistic room redesign & virtual staging powered by free AI APIs with interactive before/after split slider." />
     <title>AI Interior Designer Studio - Free Photorealistic Room Redesign</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS CDN for instant styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,15 +20,30 @@
         theme: {
           extend: {
             fontFamily: {
+              serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
               sans: ['"Plus Jakarta Sans"', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
             },
+            colors: {
+              champagne: {
+                50: '#FDFBF7',
+                100: '#F7F2E8',
+                200: '#EFE5D3',
+                300: '#E4D3B6',
+                400: '#D5BC91',
+                500: '#C5A880',
+                600: '#A98960',
+                700: '#8A6D4A',
+                800: '#6E5539',
+                900: '#55422D',
+              }
+            }
           },
         },
       }
     </script>
   </head>
-  <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen">
+  <body class="bg-[#0D0E11] text-stone-100 font-sans antialiased selection:bg-amber-600 selection:text-white min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

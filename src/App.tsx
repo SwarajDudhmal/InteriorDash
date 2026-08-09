@@ -8,6 +8,7 @@ import { InteriorAnalysis } from './components/InteriorAnalysis';
 import { PersonalizationEditor } from './components/PersonalizationEditor';
 import { DesignHistory } from './components/DesignHistory';
 import { Footer } from './components/Footer';
+import { DESIGNER_MOODBOARDS } from './data/designerMoodboards';
 
 import type { 
   RoomType, 
@@ -18,16 +19,19 @@ import type {
   TargetFocus,
   ApiSettings, 
   GenerationStatus, 
-  RedesignResult 
+  RedesignResult,
+  StudioMode
 } from './types/interior';
 import { 
   defaultApiSettings, 
   generateRoomRedesign, 
   generateRoomAnalysis 
 } from './services/aiService';
+import { Compass, ShieldCheck } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Application State
+  const [studioMode, setStudioMode] = useState<StudioMode>('atelier');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [roomType, setRoomType] = useState<RoomType>('Living Room');
   const [style, setStyle] = useState<DesignStyle>('Scandinavian');
@@ -104,7 +108,7 @@ export const App: React.FC = () => {
         onProgress: (step) => setProgressStep(step),
       });
 
-      // Generate room analysis & staging report
+      // Generate room analysis, blueprint pins & itemized INR quotation
       const analysis = generateRoomAnalysis(roomType, style, colorPalette);
 
       const result: RedesignResult = {
@@ -151,7 +155,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white font-sans flex flex-col">
+    <div className="min-h-screen bg-[#0D0E11] text-stone-100 selection:bg-amber-600 selection:text-white font-sans flex flex-col">
       
       {/* Header Navbar */}
       <Header
@@ -159,31 +163,80 @@ export const App: React.FC = () => {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenHistory={() => setIsHistoryOpen(true)}
         savedCount={history.length}
+        studioMode={studioMode}
+        onToggleStudioMode={(mode) => setStudioMode(mode)}
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-10">
         
-        {/* Hero Title Section */}
-        <div className="text-center space-y-3 max-w-3xl mx-auto pt-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-indigo-300">
-            <span>✨ Room Layout Protection Active • 100% Free AI Engine</span>
+        {/* Editorial Hero Title Section */}
+        <div className="text-center space-y-4 max-w-3xl mx-auto pt-2">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-mono text-amber-300 shadow-inner">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Structural Geometry Guard Active • Human Atelier Co-Pilot</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-300 bg-clip-text text-transparent">
-            AI Interior Redesigner & Customization Studio
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-stone-100 leading-tight">
+            Architectural Spaces, <span className="champagne-gradient-text italic font-normal">Co-Designed</span> with AI.
           </h2>
-          <p className="text-sm sm:text-base text-slate-400">
-            Upload your room photo, lock architectural structure (no extra windows!), and personalize furniture, colors, and textures with free AI.
+          <p className="text-sm sm:text-base text-stone-400 font-sans max-w-2xl mx-auto leading-relaxed">
+            Upload your room photography to preserve architectural boundaries, inspect tactile material swatches, generate itemized INR customer quotations, and experience human-curated virtual staging.
           </p>
         </div>
 
+        {/* Human Designer Collections / Moodboard Carousel */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <h3 className="font-mono text-xs uppercase tracking-widest text-stone-400 flex items-center gap-2">
+              <Compass className="w-4 h-4 text-amber-400" />
+              Human Designer Moodboard Collections
+            </h3>
+            <span className="text-[11px] text-stone-500 hidden sm:inline">Select collection to apply complete aesthetic</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {DESIGNER_MOODBOARDS.map((mb) => (
+              <button
+                key={mb.id}
+                type="button"
+                onClick={() => {
+                  setSelectedImage(mb.coverImage);
+                  setRoomType(mb.roomType);
+                  setStyle(mb.style);
+                  setColorPalette(mb.colorPalette);
+                  setLighting(mb.lighting);
+                }}
+                className="group relative aspect-[16/10] rounded-2xl overflow-hidden border border-stone-800 hover:border-amber-500/60 transition-all text-left focus:outline-none studio-card-hover"
+              >
+                <img
+                  src={mb.coverImage}
+                  alt={mb.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D0E11] via-[#0D0E11]/40 to-transparent opacity-95 group-hover:opacity-80 transition-opacity" />
+                <div className="absolute bottom-3 left-3.5 right-3.5 space-y-1">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-amber-300 px-2 py-0.5 rounded bg-amber-950/80 border border-amber-500/30 inline-block">
+                    {mb.designer}
+                  </span>
+                  <h4 className="font-serif font-bold text-sm text-stone-100 truncate group-hover:text-amber-200 transition-colors">
+                    {mb.title}
+                  </h4>
+                  <p className="text-[10px] text-stone-400 line-clamp-1 italic">
+                    "{mb.quote}"
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Top Section: Upload & Controls Split Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
           
           {/* Left Column: Room Upload & Presets (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-              Source Room Photo
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-stone-400">
+              Source Room Photography
             </h3>
             <RoomUploader
               selectedImage={selectedImage}
@@ -194,8 +247,8 @@ export const App: React.FC = () => {
 
           {/* Right Column: Style Controls (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-              Redesign Preferences & Structure Lock
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-stone-400">
+              Architectural Preferences & Structure Preservation
             </h3>
             <DesignControls
               roomType={roomType}
@@ -216,6 +269,7 @@ export const App: React.FC = () => {
               progressStep={progressStep}
               onGenerate={handleGenerate}
               isImageSelected={!!selectedImage}
+              studioMode={studioMode}
             />
           </div>
 
@@ -223,41 +277,41 @@ export const App: React.FC = () => {
 
         {/* Error Banner */}
         {errorMessage && (
-          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs font-mono flex items-center justify-between shadow-xl">
             <span>⚠️ {errorMessage}</span>
             <button
               onClick={() => setErrorMessage(null)}
-              className="text-slate-400 hover:text-white"
+              className="text-stone-400 hover:text-white"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* Bottom Section: Interactive Results & Personalization */}
+        {/* Bottom Section: Interactive Results, Blueprint Pins & Customer Quotation */}
         {currentResult && (
-          <div ref={resultRef} className="space-y-8 pt-6 border-t border-slate-800/80">
+          <div ref={resultRef} className="space-y-8 pt-8 border-t border-stone-800/80">
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-                  <span>Redesign Transformation Result</span>
+                <h3 className="text-2xl font-serif font-bold text-stone-100 flex items-center gap-2">
+                  <span>Spatial Transformation Results</span>
                 </h3>
-                <p className="text-xs text-slate-400">
-                  Interactive split slider comparison & personalized room adjustments
+                <p className="text-xs text-stone-400 font-sans">
+                  Interactive split slider comparison, Architect Blueprint Pins & Customer Quotation (INR ₹)
                 </p>
               </div>
               
               <button
                 type="button"
                 onClick={() => setShowPersonalizer(!showPersonalizer)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg flex items-center gap-2 ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-serif font-bold transition-all shadow-lg flex items-center gap-2 ${
                   showPersonalizer
-                    ? 'bg-slate-800 text-slate-200 border border-slate-700'
-                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30'
+                    ? 'bg-stone-800 text-stone-200 border border-stone-700'
+                    : 'bg-amber-800 hover:bg-amber-700 text-amber-50 shadow-amber-950/40 border border-amber-600/50'
                 }`}
               >
-                <span>{showPersonalizer ? 'Hide Personalization Studio' : '🎨 Personalize & Tweak This Room'}</span>
+                <span>{showPersonalizer ? 'Hide Personalization Studio' : '🎨 Personalize & Tweak Directives'}</span>
               </button>
             </div>
 
@@ -276,16 +330,17 @@ export const App: React.FC = () => {
               />
             )}
 
-            {/* Split Comparison Slider */}
+            {/* Split Comparison Slider with Blueprint Pins */}
             <ImageComparisonSlider
               result={currentResult}
               onReGenerate={handleGenerate}
             />
 
-            {/* AI Spatial & Furniture Analysis */}
+            {/* Architectural Presentation Spec Sheet & Customer Quotation (INR ₹) */}
             <InteriorAnalysis
               analysis={currentResult.analysis}
               styleName={currentResult.style}
+              roomType={currentResult.roomType}
             />
 
           </div>
@@ -293,10 +348,10 @@ export const App: React.FC = () => {
 
       </main>
 
-      {/* Footer */}
+      {/* Studio Footer */}
       <Footer />
 
-      {/* API Config Settings Modal */}
+      {/* Engine Config Settings Modal */}
       <ApiSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
@@ -304,7 +359,7 @@ export const App: React.FC = () => {
         onSave={(newSettings) => setApiSettings(newSettings)}
       />
 
-      {/* Saved History Drawer */}
+      {/* Saved Architectural History Drawer */}
       <DesignHistory
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
@@ -328,3 +383,4 @@ export const App: React.FC = () => {
 };
 
 export default App;
+

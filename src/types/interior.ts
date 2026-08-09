@@ -46,6 +46,8 @@ export type TargetFocus = 'entire-room' | 'furniture-only' | 'walls-and-floors' 
 
 export type ApiProvider = 'pollinations' | 'huggingface' | 'custom';
 
+export type StudioMode = 'atelier' | 'copilot';
+
 export interface ApiSettings {
   provider: ApiProvider;
   huggingFaceToken?: string;
@@ -61,16 +63,67 @@ export interface FurnitureRecommendation {
   category: string;
   description: string;
   estimatedPrice: string;
+  estimatedPriceINR: number;
   material: string;
 }
 
+export interface QuotationItem {
+  id: string;
+  name: string;
+  category: string;
+  quantity: number;
+  unitPriceINR: number;
+  totalPriceINR: number;
+  description: string;
+  material: string;
+}
+
+export interface RoomQuotation {
+  items: QuotationItem[];
+  subtotalINR: number;
+  laborInstallationINR: number;
+  gstPercentage: number;
+  gstINR: number;
+  grandTotalINR: number;
+  currency: 'INR';
+  formattedGrandTotal: string;
+}
+
+export interface BlueprintPin {
+  id: string;
+  x: number; // percentage from left (0-100)
+  y: number; // percentage from top (0-100)
+  title: string;
+  category: 'Lighting' | 'Structure' | 'Material' | 'Furniture';
+  details: string;
+}
+
+export interface ColorSwatchInfo {
+  name: string;
+  hex: string;
+  role: string;
+}
+
+export interface MaterialInfo {
+  name: string;
+  finish: string;
+  origin: string;
+  sustainabilityScore: string;
+}
+
 export interface RoomAnalysis {
-  dominantColors: string[];
-  materials: string[];
+  dominantColors: ColorSwatchInfo[];
+  materials: MaterialInfo[];
   keyFurniture: FurnitureRecommendation[];
   designNotes: string;
   spatialAdvice: string;
+  daylightKelvin: string;
+  acousticScore: string;
+  estimatedVolume: string;
+  blueprintPins: BlueprintPin[];
+  quotation: RoomQuotation;
 }
+
 
 export interface RedesignResult {
   id: string;
@@ -95,4 +148,20 @@ export interface SampleRoom {
   category: RoomType;
   imageUrl: string;
   recommendedStyle: DesignStyle;
+  architectNote?: string;
 }
+
+export interface DesignerMoodboard {
+  id: string;
+  title: string;
+  designer: string;
+  location: string;
+  style: DesignStyle;
+  roomType: RoomType;
+  colorPalette: ColorPalette;
+  lighting: LightingVibe;
+  coverImage: string;
+  quote: string;
+  architecturalElements: string[];
+}
+

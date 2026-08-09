@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, Sparkles, CheckCircle2, RotateCcw } from 'lucide-react';
+import { CheckCircle2, RotateCcw, Camera, Compass } from 'lucide-react';
 import type { RoomType, DesignStyle } from '../types/interior';
 import { SAMPLE_ROOMS } from '../data/sampleRooms';
 
@@ -58,18 +58,19 @@ export const RoomUploader: React.FC<RoomUploaderProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Upload Zone / Active Preview */}
+      
+      {/* Upload Drop Zone / Image Workspace */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !selectedImage && fileInputRef.current?.click()}
-        className={`relative overflow-hidden rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
+        className={`relative overflow-hidden rounded-2xl border transition-all cursor-pointer ${
           selectedImage
-            ? 'border-indigo-500/50 bg-slate-900/60'
+            ? 'border-amber-500/40 bg-[#121316]'
             : isDragging
-            ? 'border-indigo-500 bg-indigo-500/10 scale-[1.01]'
-            : 'border-slate-800 hover:border-slate-700 bg-slate-900/40 hover:bg-slate-900/70'
+            ? 'border-amber-500 bg-amber-500/10 scale-[1.005]'
+            : 'border-stone-800 hover:border-amber-600/50 bg-[#121316]/80 hover:bg-[#15161B]'
         }`}
       >
         <input
@@ -84,64 +85,64 @@ export const RoomUploader: React.FC<RoomUploaderProps> = ({
           <div className="relative group w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden rounded-2xl">
             <img
               src={selectedImage}
-              alt="Room original upload"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              alt="Architectural source photo"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80" />
+            {/* Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0E11] via-transparent to-[#0D0E11]/30 opacity-80" />
             
-            {/* Top Badge */}
-            <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-700/80 text-xs font-semibold text-emerald-400">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Room Photo Ready
+            {/* Top Status Tag */}
+            <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0D0E11]/85 backdrop-blur-md border border-stone-700/80 text-[11px] font-medium text-amber-300 shadow-lg">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Architectural Source Photo Locked</span>
             </div>
 
-            {/* Clear/Replace overlay button */}
-            <div className="absolute bottom-3 right-3 flex items-center gap-2">
+            {/* Change Image Button */}
+            <div className="absolute bottom-3.5 right-3.5">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClearImage();
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-rose-600 backdrop-blur-md border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition-all shadow-lg"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#15161A]/90 hover:bg-rose-950 backdrop-blur-md border border-stone-700 hover:border-rose-500/50 text-xs font-medium text-stone-200 hover:text-white transition-all shadow-xl"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                Change Image
+                <span>Replace Photo</span>
               </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center space-y-4">
-            <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 shadow-inner">
-              <UploadCloud className="w-8 h-8 animate-bounce" />
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 shadow-inner">
+              <Camera className="w-7 h-7" />
             </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-100">
-                Upload room photo or drag & drop here
+            <div className="space-y-1">
+              <h3 className="font-serif font-bold text-lg text-stone-100">
+                Upload Spatial Room Photo
               </h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm">
-                Supports JPG, PNG, or WEBP. High contrast interior photos produce the best photorealistic redesigns.
+              <p className="text-xs text-stone-400 max-w-xs mx-auto leading-relaxed">
+                Drag and drop your room photography (JPG, PNG, WEBP). High-resolution daylight photos recommended.
               </p>
             </div>
             <button
               type="button"
-              className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all"
+              className="px-5 py-2.5 rounded-xl text-xs font-semibold text-stone-100 bg-stone-800 hover:bg-stone-700 border border-stone-700 shadow-md transition-all"
             >
-              Browse Photo Files
+              Browse Local Files
             </button>
           </div>
         )}
       </div>
 
-      {/* Preset Sample Rooms Bar */}
+      {/* Demo Preset Rooms Carousel Bar */}
       <div>
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            Or Select a Demo Room Preset
+          <span className="text-[11px] font-mono uppercase tracking-widest text-stone-400 flex items-center gap-1.5">
+            <Compass className="w-3.5 h-3.5 text-amber-400" />
+            Or Select an Architectural Demo Space
           </span>
-          <span className="text-[11px] text-slate-500">Click to load photo instantly</span>
+          <span className="text-[10px] text-stone-500 hidden sm:inline">Instant Load</span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
@@ -150,19 +151,19 @@ export const RoomUploader: React.FC<RoomUploaderProps> = ({
               key={sample.id}
               type="button"
               onClick={() => onSelectImage(sample.imageUrl, { roomType: sample.category, style: sample.recommendedStyle })}
-              className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-slate-800 hover:border-indigo-500/80 transition-all text-left focus:outline-none"
+              className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-stone-800 hover:border-amber-500/60 transition-all text-left focus:outline-none"
             >
               <img
                 src={sample.imageUrl}
                 alt={sample.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90 group-hover:opacity-75 transition-opacity" />
-              <div className="absolute bottom-1.5 left-2 right-2">
-                <span className="block text-[11px] font-bold text-slate-100 truncate">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0E11] via-[#0D0E11]/30 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
+              <div className="absolute bottom-2 left-2 right-2">
+                <span className="block text-[11px] font-serif font-bold text-stone-100 truncate">
                   {sample.name}
                 </span>
-                <span className="text-[9px] text-indigo-300 font-medium">
+                <span className="text-[9px] text-amber-300 font-mono">
                   {sample.category}
                 </span>
               </div>
@@ -170,6 +171,8 @@ export const RoomUploader: React.FC<RoomUploaderProps> = ({
           ))}
         </div>
       </div>
+
     </div>
   );
 };
+
